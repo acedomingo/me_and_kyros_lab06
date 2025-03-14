@@ -6,7 +6,7 @@ import random
 
 PLATFORM_GAP = 30
 EGG_VY = -10
-PLATFORM_VX = 2.5
+PLATFORM_VX = random.uniform(1.0, 4.0)
 PLATFORM_WIDTH = 60
 PLATFORM_HEIGHT = 3
 
