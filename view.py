@@ -38,3 +38,6 @@ class View:
 
     def draw_win(self):
         pyxel.text(self._width // 2 - 15, self._height // 2, "You win", 7)
+
+    def draw_lives(self, lives: int):
+        pyxel.text(self._width - 15, 15, str(lives), 8)

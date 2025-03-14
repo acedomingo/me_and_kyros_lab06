@@ -18,6 +18,7 @@ class Controller:
         self._view.draw_platform(self._model._platforms)
         self._view.draw_egg(self._model._egg)
         self._view.draw_score(self._model.score)
+        self._view.draw_lives(self._model._egg_lives)
  
         if self._model.is_game_over:
             if self._model._egg_lives <= 0:
