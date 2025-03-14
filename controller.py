@@ -20,4 +20,7 @@ class Controller:
         self._view.draw_score(self._model.score)
  
         if self._model.is_game_over:
-            self._view.draw_game_over()
+            if self._model._egg_lives <= 0:
+                self._view.draw_game_over()
+            if self._model._current_index > 4:
+                self._view.draw_win()

@@ -35,3 +35,6 @@ class View:
  
     def draw_game_over(self):
         pyxel.text(self._width // 2 - 15, self._height // 2, "Game over", 7)
+
+    def draw_win(self):
+        pyxel.text(self._width // 2 - 15, self._height // 2, "You win", 7)
