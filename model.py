@@ -39,7 +39,7 @@ class Egg:
 class Platform:
     x: float
     y: float
-    vx: float = 0
+    vx: float
     to_right: bool = True
 
 
@@ -69,7 +69,7 @@ class Model:
         self._score: int = 0
         self._egg_lives: int = 10
         self._frame_count: int = 0
-        self._platforms: list[Platform] = [Platform(random.randint(1, self._width - PLATFORM_WIDTH - 1), height -  (i * PLATFORM_GAP), random.uniform(1.0, 4.0))
+        self._platforms: list[Platform] = [Platform(random.randint(1, self._width - PLATFORM_WIDTH - 1), height -  (i * PLATFORM_GAP), float(random.randint(1,4)))
                            for i in range(1, 6)]
         
         self._current_platform: Platform = self._platforms[0]
@@ -96,7 +96,7 @@ class Model:
                 egg.jumping = False
  
         if self._is_game_over:
-            return 
+            return
  
         if was_spacebar_just_pressed:
             egg.jumping = True
@@ -104,17 +104,10 @@ class Model:
             egg.vy = EGG_VY
 
         for platform in self._platforms:
-            if platform.right + platform.vx >= self._width:
-                platform.to_right = False
-            if platform.left - platform.vx <= 0:
-                platform.to_right = True
-
-            if platform.to_right:
-                platform.vx = platform.vx
-                platform.x += platform.vx
-            else:
+            if platform.right + platform.vx >= self._width or platform.left + platform.vx <= 0:
                 platform.vx = -platform.vx
-                platform.x += platform.vx
+            
+            platform.x += platform.vx
     
         if egg.jumping:
             egg.vx = 0
