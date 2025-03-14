@@ -69,7 +69,7 @@ class Model:
         self._score: int = 0
         self._egg_lives: int = 10
         self._frame_count: int = 0
-        self._platforms: list[Platform] = [Platform(random.randint(1, self._width - PLATFORM_WIDTH - 1), height -  (i * PLATFORM_GAP), float(random.randint(1,4)))
+        self._platforms: list[Platform] = [Platform(random.randint(1, self._width - PLATFORM_WIDTH - 1), height -  (i * PLATFORM_GAP), float(random.randint(1,4)) * random.choice((1, -1)))
                            for i in range(1, 6)]
         
         self._current_platform: Platform = self._platforms[0]
