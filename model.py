@@ -3,12 +3,10 @@ from collections.abc import Sequence
 from project_types import Rectangle
 import random
 
-
 PLATFORM_GAP = 30
 EGG_VY = -10
 PLATFORM_WIDTH = 60
 PLATFORM_HEIGHT = 3
-
 
 @dataclass
 class Egg:
@@ -71,23 +69,25 @@ class Model:
         self._frame_count: int = 0
         self._platforms: list[Platform] = [Platform(random.randint(1, self._width - PLATFORM_WIDTH - 1), height -  (i * PLATFORM_GAP), float(random.randint(1,4)) * random.choice((1, -1)))
                            for i in range(1, 6)]
-        
+        self._delay: int = -1 # para lang masigurado di siya mag-equal sa frame_count
+        self._trigger_delay: bool = False # nakapause ba or inde
         self._current_platform: Platform = self._platforms[0]
         self._current_index: int = 1
         self._egg = Egg((self._current_platform.right + self._current_platform.left) // 2, self._current_platform.top - 8.0, 0, 0)
-        
 
     def update(self, was_spacebar_just_pressed: bool):
         """Should be called once per frame/tick."""
         egg = self._egg
-
-        if self._current_index > 4:
-            self._is_game_over = True
  
-        if self._height <= egg.top or egg.bottom < 0:
-            if self._egg_lives <= 0:
+        if (self._height <= egg.top or egg.bottom < 0 or self._current_index > 4) and not self._trigger_delay: # if either nawala si egg sa screen or natalo or nanalo
+            self._delay = self._frame_count + self._fps
+            self._trigger_delay = True
+
+        if self._trigger_delay and self._delay == self._frame_count: # edi kung after one second na
+            self._trigger_delay = False # siyempre gagawing false ulit si trigger delay since time is up
+            if self._egg_lives <= 0 or self._current_index > 4: # game over
                 self._is_game_over = True
-            else:
+            else: # respawn
                 self._egg_lives -= 1
                 egg.x = (self._current_platform.right + self._current_platform.left) // 2
                 egg.y =  self._current_platform.top - 8.0
@@ -95,13 +95,11 @@ class Model:
                 egg.vy = 0
                 egg.jumping = False
  
-        if self._is_game_over:
-            return
- 
         if was_spacebar_just_pressed:
-            egg.jumping = True
-            self._jump_frame = self._frame_count
-            egg.vy = EGG_VY
+            if not self._is_game_over and not self._trigger_delay:
+                egg.jumping = True
+                self._jump_frame = self._frame_count
+                egg.vy = EGG_VY
 
         for platform in self._platforms:
             if platform.right + platform.vx >= self._width or platform.left + platform.vx <= 0:
@@ -148,7 +146,7 @@ class Model:
         dist = ((test_x - circle.x)**2 + (test_y - circle.y)**2)**0.5
  
         return dist < circle.radius
- 
+
     @property
     def width(self):
         return self._width
