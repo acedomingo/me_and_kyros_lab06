@@ -65,7 +65,7 @@ class Model:
 
         self._is_game_over: bool = False
         self._score: int = 0
-        self._egg_lives: int = 10
+        self._egg_lives: int = 3
         self._frame_count: int = 0
         self._platforms: list[Platform] = [Platform(random.randint(1, self._width - PLATFORM_WIDTH - 1), height -  (i * PLATFORM_GAP), float(random.randint(1,4)) * random.choice((1, -1)))
                            for i in range(1, 6)]
@@ -80,6 +80,8 @@ class Model:
         egg = self._egg
  
         if (self._height <= egg.top or egg.bottom < 0 or self._current_index > 4) and not self._trigger_delay: # if either nawala si egg sa screen or natalo or nanalo
+            if (self._height <= egg.top or egg.bottom < 0) and not self._is_game_over:
+                self._egg_lives -= 1
             self._delay = self._frame_count + self._fps
             self._trigger_delay = True
 
@@ -88,7 +90,6 @@ class Model:
             if self._egg_lives <= 0 or self._current_index > 4: # game over
                 self._is_game_over = True
             else: # respawn
-                self._egg_lives -= 1
                 egg.x = (self._current_platform.right + self._current_platform.left) // 2
                 egg.y =  self._current_platform.top - 8.0
                 egg.vx = self._current_platform.vx
@@ -96,7 +97,7 @@ class Model:
                 egg.jumping = False
  
         if was_spacebar_just_pressed:
-            if not self._is_game_over and not self._trigger_delay:
+            if not self._is_game_over and not self._trigger_delay and not egg.jumping:
                 egg.jumping = True
                 self._jump_frame = self._frame_count
                 egg.vy = EGG_VY
